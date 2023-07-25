@@ -1,109 +1,67 @@
 #include "main.h"
-void print_buffer(char buffer[], int *buff_ind);
-/**
- * _printf - Printf function
- * @format: format.
- * Return: Printed chars.
- */
+
 int _printf(const char *format, ...)
 {
-int i, printed, printed_chars;
-printed = 0;
-printed_chars = 0;
-int flags, width, precision, size, buff_ind;
-buff_ind = 0;
-va_list list;
-
-char buffer[BUFF_SIZE];
-
-if (format == NULL)
-
-return (-1);
-
-va_start(list, format);
-
-for (i = 0; format && format[i] != '\0'; i++)
-
+va_list args;
+int i, len;
+va_start(args, format);
+for (i = 0, len = 0; format[i]; i++)
 {
-
-if (format[i] != '%')
-
+if (format[i] == '%')
 {
-
-buffer[buff_ind++] = format[i];
-
-if (buff_ind == BUFF_SIZE)
-
-print_buffer(buffer, &buff_ind);
-
-/* write(1, &format[i], 1);*/
-
-printed_chars++;
-
+i++;
+switch (format[i])
+{
+case 'c':
+len += print_c(args);
+break;
+case 's':
+len += print_s(args);
+break;
+case '%':
+len += print_percent(args);
+break;
+default:
+_putchar(format[i - 1]);
+_putchar(format[i]);
+len += 2;
 }
-
+}
 else
-
 {
-
-print_buffer(buffer, &buff_ind);
-
-flags = get_flags(format, &i);
-
-width = get_width(format, &i, list);
-
-precision = get_precision(format, &i, list);
-
-size = get_size(format, &i);
-
-++i;
-
-printed = handle_print(format, &i, list, buffer,
-
-flags, width, precision, size);
-
-if (printed == -1)
-
-return (-1);
-
-printed_chars += printed;
-
+_putchar(format[i]);
+len++;
+}
+}
+va_end(args);
+return (len);
 }
 
-}
-
-
-
-print_buffer(buffer, &buff_ind);
-
-
-
-va_end(list);
-
-
-
-return (printed_chars);
-
-}
-
-
-
-/**
- * print_buffer - Prints the contents of the buffer if it exist
- * @buffer: Array of chars
- * @buff_ind: Index at which to add next char, represents the length.
- */
-
-void print_buffer(char buffer[], int *buff_ind)
-
+int print_c(va_list args)
 {
+char c = va_arg(args, int);
+_putchar(c);
+return (1);
+}
 
-if (*buff_ind > 0)
-
-write(1, &buffer[0], *buff_ind);
-
-
-
-*buff_ind = 0;
-
+int print_s(va_list args)
+{
+char *str;
+str = va_arg(args, char *);
+int len;
+len = 0;
+if (!str)
+str = "(null)";
+while (str[len])
+{
+_putchar(str[len]);
+len++;
+}
+return (len);
+}
+int print_percent(va_list args)
+{
+(void)args;
+_putchar('%');
+return (1);
 }
