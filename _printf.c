@@ -1,6 +1,4 @@
 #include "main.h"
-#include <stdarg.h>
-#include <unistd.h>
 
 /**
  * _printf - prints a formatted string to the standard output stream
@@ -13,6 +11,7 @@ int _printf(const char *format, ...)
 {
 va_list args;
 int count;
+char c, *s;
 count = 0;
 va_start(args, format);
 while (*format)
@@ -22,12 +21,12 @@ if (*format == '%')
 format++;
 if (*format == 'c')
 {
-char c = va_arg(args, int);
+c = va_arg(args, int);
 count += write(1, &c, 1);
 }
 else if (*format == 's')
 {
-char *s = va_arg(args, char *);
+s = va_arg(args, char *);
 if (s == NULL)
 s = "(null)";
 count += write(1, s, _strlen(s));
@@ -64,9 +63,7 @@ int _strlen(char *s)
 int len;
 len = 0;
 while (*s)
-{
 len++;
 s++;
-}
 return (len);
 }
