@@ -1,67 +1,72 @@
 #include "main.h"
+#include <stdarg.h>
+#include <unistd.h>
 
+/**
+ * _printf - prints a formatted string to the standard output stream
+ * @format: format string
+ *
+ * Return: the number of characters printed (excluding the null byte used to
+ * end output to strings)
+ */
 int _printf(const char *format, ...)
 {
 va_list args;
-int i, len;
+int count;
+count = 0;
 va_start(args, format);
-for (i = 0, len = 0; format[i]; i++)
+while (*format)
 {
-if (format[i] == '%')
+if (*format == '%')
 {
-i++;
-switch (format[i])
+format++;
+if (*format == 'c')
 {
-case 'c':
-len += print_c(args);
-break;
-case 's':
-len += print_s(args);
-break;
-case '%':
-len += print_percent(args);
-break;
-default:
-_putchar(format[i - 1]);
-_putchar(format[i]);
-len += 2;
+char c = va_arg(args, int);
+count += write(1, &c, 1);
+}
+else if (*format == 's')
+{
+char *s = va_arg(args, char *);
+if (s == NULL)
+s = "(null)";
+count += write(1, s, _strlen(s));
+}
+else if (*format == '%')
+{
+count += write(1, "%", 1);
+}
+else
+{
+count += write(1, "%", 1);
+if (*format)
+count += write(1, format, 1);
 }
 }
 else
 {
-_putchar(format[i]);
-len++;
+count += write(1, format, 1);
 }
+format++;
 }
 va_end(args);
-return (len);
+return (count);
 }
 
-int print_c(va_list args)
+/**
+ * _strlen - returns the length of a string
+ * @s: string
+ *
+ * Return: length of s
+ */
+int _strlen(char *s)
 {
-char c = va_arg(args, int);
-_putchar(c);
-return (1);
-}
-
-int print_s(va_list args)
-{
-char *str;
-str = va_arg(args, char *);
 int len;
 len = 0;
-if (!str)
-str = "(null)";
-while (str[len])
+while (*s)
 {
-_putchar(str[len]);
 len++;
+s++;
 }
 return (len);
-}
-int print_percent(va_list args)
-{
-(void)args;
-_putchar('%');
-return (1);
 }

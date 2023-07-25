@@ -17,5 +17,6 @@ int print_pointer(va_list args);
 int print_rev(va_list args);
 int print_rot13(va_list args);
 int _putchar(char c);
+int srlen (char *S);
 
 #endif /* MAIN_H */
