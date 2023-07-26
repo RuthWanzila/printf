@@ -15,7 +15,7 @@
 int print_unsigned(va_list types, char buffer[],
 int flags, int width, int precision, int size)
 {
-int i = BUFF_SIZE - 2;
+int i = BUFSIZ - 2;
 unsigned long int num = va_arg(types, unsigned long int);
 num = convert_size_unsgnd(num, size);
 if (num == 0)
